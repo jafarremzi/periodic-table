@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#05070d" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>جدول تناوبی سه‌بعدی</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧪%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- es-module-shims: پشتیبانی importmap روی مرورگرهای قدیمی‌تر موبایل (iOS < 16.4) -->
+<script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div id="brand" class="glass">🧪 جدول تناوبی</div>
+
+  <nav id="dock" class="glass" aria-label="کنترل‌ها">
+    <button class="btn active" id="btnTable"><span class="ic">▦</span><span class="lb">جدول</span></button>
+    <button class="btn" id="btnSphere"><span class="ic">◍</span><span class="lb">کره</span></button>
+    <button class="btn" id="btnAuto"><span class="ic">⟳</span><span class="lb">چرخش</span></button>
+    <button class="btn" id="btnReset"><span class="ic">⌖</span><span class="lb">بازنشانی</span></button>
+    <button class="btn" id="btnCamera"><span class="ic">🖐️</span><span class="lb">کنترل دست</span></button>
+    <button class="btn" id="btnHelp" aria-label="راهنما"><span class="ic">؟</span><span class="lb">راهنما</span></button>
+  </nav>
+
+  <aside id="info" class="glass" aria-live="polite">
+    <button id="infoClose" aria-label="بستن">✕</button>
+    <div class="top">
+      <div class="big"><span id="infoNumber">1</span><b id="infoSymbol">H</b></div>
+      <div class="side">
+        <div id="infoName">Hydrogen</div>
+        <span id="infoCat" class="chip">نافلز</span>
+      </div>
+    </div>
+    <dl>
+      <div><dt>دوره</dt><dd id="infoPeriod">۱</dd></div>
+      <div><dt>گروه</dt><dd id="infoGroup">۱</dd></div>
+    </dl>
+  </aside>
+
+  <div id="cam" aria-hidden="true">
+    <video id="camVideo" autoplay playsinline muted></video>
+    <canvas id="camCanvas"></canvas>
+  </div>
+  <div id="badge" role="status" aria-live="polite">در انتظار دست…</div>
+
+  <div id="cursor"></div>
+  <div id="toast" role="status"></div>
+
+  <div id="help" class="glass" role="dialog" aria-label="راهنما">
+    <h2>راهنمای کنترل</h2>
+    <h3>لمس و ماوس</h3>
+    <ul>
+      <li><b>کشیدن</b> چرخاندن (وقتی زوم کرده‌اید: جابه‌جایی)</li>
+      <li><b>دو انگشت</b> زوم و جابه‌جایی</li>
+      <li><b>تپ روی عنصر</b> نمایش اطلاعات</li>
+      <li><b>چرخ ماوس</b> زوم، <b>Shift + کشیدن</b> جابه‌جایی</li>
+    </ul>
+    <h3>دست (دوربین)</h3>
+    <ul>
+      <li>🖐️ <b>کف دست باز و حرکت</b> چرخش</li>
+      <li>☝️ <b>اشاره با یک انگشت</b> نشانگر؛ کمی ثابت بمانید تا انتخاب شود</li>
+      <li>👌 <b>چسباندن شست و اشاره</b> کلیک فوری</li>
+      <li>✊ <b>مشت، نزدیک/دور کردن دست</b> زوم</li>
+      <li>🤲 <b>دو دست، دور/نزدیک کردن</b> زوم</li>
+      <li>✌️ <b>نگه‌داشتن</b> جدول ↔ کره</li>
+      <li>👍 <b>نگه‌داشتن</b> بازنشانی نما</li>
+      <li>🤟 <b>نگه‌داشتن</b> چرخش خودکار</li>
+    </ul>
+    <p>برای لمس صفحه ضربه بزنید تا بسته شود.</p>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+:root {
+  --bg: #05070d;
+  --panel: rgba(12, 17, 30, .94);      /* کدر؛ blur پس‌زمینه عمداً استفاده نشده تا روی موبایل روان بماند */
+  --line: rgba(255, 255, 255, .14);
+  --accent: #7dd3fc;
+  --text: #e6edf3;
+  --muted: #93a1b3;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --dock-h: 66px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; height: 100%; overflow: hidden;
+  color: var(--text);
+  font-family: "Vazirmatn", "Segoe UI", Tahoma, system-ui, sans-serif;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; user-select: none;
+  -webkit-text-size-adjust: 100%;
+}
+body { background: radial-gradient(ellipse at 50% 15%, #111c36 0%, #05070d 62%, #010204 100%); }
+
+/* ---------- صحنهٔ سه‌بعدی (همیشه LTR؛ فقط رابط کاربری RTL است) ---------- */
+#stage {
+  position: fixed; z-index: 1; inset: 0; direction: ltr; overflow: hidden;
+  /* رندرر CSS3D شفاف است تا ویدئوی دوربین از پشت جدول دیده شود. */
+  background: transparent;
+  touch-action: none; cursor: grab;
+}
+#stage:active { cursor: grabbing; }
+
+.element {
+  direction: ltr;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  will-change: transform;
+  cursor: pointer;
+}
+.card {
+  position: relative; width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 10px; border: 1px solid var(--line);
+  background: linear-gradient(160deg, var(--c1), var(--c2));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .4);
+  color: #fff; text-align: center;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.card .num { position: absolute; top: 8px; right: 10px; font-size: 12px; opacity: .8; }
+.card .sym { font-size: 42px; font-weight: 700; line-height: 1; margin-top: 4px; letter-spacing: 1px; }
+.card .nm  { font-size: 11px; opacity: .9; margin-top: 9px; padding: 0 6px; }
+
+@media (hover: hover) {
+  .element:hover .card { transform: scale(1.06); border-color: rgba(255, 255, 255, .7); }
+}
+.element.hover .card { transform: scale(1.08); border-color: #fff; }       /* هاور با نشانگر دست */
+.element.sel .card { transform: scale(1.06); border-color: #fff; box-shadow: 0 0 0 3px #fff, 0 0 30px 6px var(--accent); }
+
+.cat-alkali     { --c1: #e0483b; --c2: #a8281d; }
+.cat-alkaline   { --c1: #e98a12; --c2: #b5640a; }
+.cat-transition { --c1: #d9a406; --c2: #a67c04; }
+.cat-post       { --c1: #7fb23f; --c2: #527c24; }
+.cat-metalloid  { --c1: #14948a; --c2: #0b6259; }
+.cat-nonmetal   { --c1: #1b9ad6; --c2: #0f6791; }
+.cat-halogen    { --c1: #4658c4; --c2: #2c3a8c; }
+.cat-noble      { --c1: #9a3fb0; --c2: #6a2a7d; }
+.cat-lanthanide { --c1: #d8306f; --c2: #9c1c4d; }
+.cat-actinide   { --c1: #8d6e63; --c2: #5a4339; }
+
+/* ---------- رابط کاربری ---------- */
+.glass {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+}
+
+#brand {
+  position: fixed; z-index: 30; top: calc(12px + var(--sat)); inset-inline-start: 12px;
+  padding: 8px 14px; font-size: 13px; font-weight: 700; color: var(--accent); white-space: nowrap;
+  pointer-events: none;
+}
+
+#dock {
+  position: fixed; z-index: 40; left: 50%; transform: translateX(-50%);
+  bottom: calc(12px + var(--sab));
+  display: flex; gap: 4px; padding: 6px; max-width: calc(100vw - 16px);
+}
+.btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-width: 60px; min-height: 52px; padding: 6px 8px;
+  font: inherit; font-size: 11px; color: var(--text);
+  background: transparent; border: 1px solid transparent; border-radius: 11px;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.btn .ic { font-size: 19px; line-height: 1; }
+.btn:hover { background: rgba(255, 255, 255, .07); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.btn.active { background: var(--accent); color: #04101a; font-weight: 700; }
+.btn:disabled { opacity: .5; cursor: progress; }
+
+/* کارت اطلاعات عنصر */
+#info {
+  position: fixed; z-index: 35; display: none;
+  bottom: calc(var(--dock-h) + 24px + var(--sab)); inset-inline-end: 14px;
+  width: min(300px, calc(100vw - 28px)); padding: 16px;
+  border-color: var(--accent);
+}
+#info.open { display: block; animation: rise .22s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+#infoClose {
+  position: absolute; top: 6px; inset-inline-start: 6px; width: 34px; height: 34px;
+  font: inherit; color: var(--muted); background: transparent; border: 0; border-radius: 8px; cursor: pointer;
+}
+#info .top { display: flex; align-items: center; gap: 14px; margin-top: 10px; direction: ltr; }
+#info .big { position: relative; min-width: 84px; height: 84px; display: grid; place-items: center;
+  border-radius: 12px; border: 1px solid var(--line); background: rgba(255, 255, 255, .05); }
+#info .big span { position: absolute; top: 6px; left: 9px; font-size: 12px; color: var(--muted); }
+#info .big b { font-size: 38px; color: var(--accent); }
+#info .side { display: grid; gap: 8px; justify-items: start; }
+#infoName { font-size: 18px; font-weight: 600; }
+.chip { padding: 3px 10px; border-radius: 99px; font-size: 12px; color: #fff; direction: rtl; }
+#info dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0 0; }
+#info dl div { padding: 8px 12px; border-radius: 10px; background: rgba(255, 255, 255, .05); }
+#info dt { font-size: 11px; color: var(--muted); }
+#info dd { margin: 2px 0 0; font-size: 17px; font-weight: 700; }
+
+/* دوربین تمام‌صفحه: پس‌زمینه پشت جدول سه‌بعدی قرار می‌گیرد */
+#cam {
+  position: fixed; z-index: 0; display: none; overflow: hidden;
+  inset: 0; width: 100vw; height: 100vh; height: 100dvh;
+  border: 0; border-radius: 0; box-shadow: none; background: transparent;
+  pointer-events: none;
+}
+#cam.open { display: block; }
+#camVideo, #camCanvas {
+  position: absolute; inset: 0; display: block;
+  width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);
+  pointer-events: none;
+}
+#camVideo { z-index: 0; }
+/* سایهٔ بسیار ملایم برای حفظ کنتراست کارت‌های جدول */
+#cam::after {
+  content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(5, 7, 13, .18), rgba(5, 7, 13, .04) 45%, rgba(5, 7, 13, .17));
+}
+#camCanvas { z-index: 2; }
+/* وضعیت تشخیص بیرون از لایهٔ دوربین می‌ماند تا روی جدول نیز دیده شود */
+#badge {
+  display: none; position: fixed; z-index: 45; top: calc(12px + var(--sat)); left: 12px;
+  max-width: min(68vw, 340px); padding: 7px 11px; text-align: center;
+  font-size: 11px; line-height: 1.5; color: var(--accent);
+  background: rgba(5, 7, 13, .82); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .25); pointer-events: none;
+}
+#badge.visible { display: block; }
+
+/* نشانگر دست؛ حلقهٔ پیشرفت = زمان باقی‌مانده تا انتخاب */
+#cursor {
+  position: fixed; left: 0; top: 0; z-index: 60; display: none; pointer-events: none;
+  width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: conic-gradient(rgba(125, 211, 252, .55) calc(var(--p, 0) * 360deg), rgba(125, 211, 252, .08) 0);
+  box-shadow: 0 0 14px rgba(125, 211, 252, .6);
+  will-change: transform;
+}
+#cursor.pinch { border-color: #f472b6; background: rgba(244, 114, 182, .45); box-shadow: 0 0 16px rgba(244, 114, 182, .8); }
+
+#toast {
+  position: fixed; z-index: 70; left: 50%; top: calc(64px + var(--sat));
+  transform: translate(-50%, -8px); max-width: calc(100vw - 32px);
+  padding: 9px 16px; border-radius: 12px; font-size: 13px; line-height: 1.6; text-align: center;
+  color: var(--text); background: var(--panel); border: 1px solid var(--line);
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* راهنما */
+#help {
+  position: fixed; z-index: 80; display: none; inset: 0; margin: auto;
+  width: min(430px, calc(100vw - 24px)); height: fit-content; max-height: calc(100dvh - 32px - var(--sat) - var(--sab));
+  overflow-y: auto; padding: 18px 20px; line-height: 1.9; font-size: 13.5px;
+  -webkit-user-select: none; user-select: none;
+}
+#help.open { display: block; animation: rise .2s ease-out; }
+#help h2 { margin: 0 0 6px; font-size: 17px; color: var(--accent); }
+#help h3 { margin: 12px 0 2px; font-size: 13px; color: var(--muted); font-weight: 600; }
+#help ul { margin: 0; padding: 0; list-style: none; }
+#help li { padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+#help p { margin: 12px 0 0; font-size: 12px; color: var(--muted); }
+
+/* ---------- موبایل ---------- */
+@media (max-width: 640px) {
+  #dock { width: calc(100vw - 16px); justify-content: space-between; bottom: calc(8px + var(--sab)); }
+  .btn { min-width: 0; flex: 1; padding: 6px 2px; font-size: 10.5px; }
+  #info { inset-inline: 10px; width: auto; bottom: calc(var(--dock-h) + 14px + var(--sab)); }
+  #cam { width: 100vw; }
+  #badge { top: calc(10px + var(--sat)); left: 10px; max-width: 62vw; font-size: 9.5px; padding: 6px 8px; }
+  #brand { font-size: 12px; padding: 7px 11px; }
+}
+@media (max-height: 460px) and (orientation: landscape) {
+  #brand { display: none; }
+  #badge { top: calc(8px + var(--sat)); left: 8px; max-width: 44vw; }
+  #info { inset-inline-end: 10px; bottom: 8px; width: 250px; }
+  #dock { inset-inline-start: 8px; left: auto; transform: none; width: auto; bottom: auto; top: 50%; translate: 0 -50%; flex-direction: column; }
+  .btn { flex-direction: row; min-width: 86px; min-height: 40px; gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, #toast { transition: none; }
+  #info.open, #help.open { animation: none; }
+}
